@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Kedaluwarsa</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    body { transition: background-color 0.3s, color 0.3s; }
+    @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.5;} }
+    .blinking { animation: blink 1s infinite; }
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fade-in 0.8s ease-out; }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-screen px-4">
+
+  <div class="bg-gray-100 dark:bg-gray-800 shadow-xl rounded-3xl p-8 max-w-lg w-full text-center animate-fade-in">
+    <h1 class="text-4xl font-extrabold text-red-600 dark:text-red-400 mb-4">
+      Website Expired
+    </h1>
+    <p class="text-lg mb-2">
+      Maaf, situs ini telah kedaluwarsa atau tidak lagi aktif.
+    </p>
+    <div
+      id="masaAktifCard"
+      data-expiry="<%= expiry %>"
+      class="mt-6 p-4 rounded-xl border-l-8 bg-gray-200 dark:bg-gray-700"
+    >
+      <div class="text-left">
+        <p class="text-sm text-gray-600 dark:text-gray-300">Masa Aktif:</p>
+        <p id="countdownText" class="text-xl font-bold">Memuat...</p>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-6 mb-6">
+      Silakan hubungi administrator untuk informasi lebih lanjut.
+    </p>
+
+    <a
+      href="https://t.me/licensewebsitebot"
+      class="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-full transition duration-300"
+    >
+      Hubungi Admin
+    </a>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const card = document.getElementById("masaAktifCard");
+      const countdownText = document.getElementById("countdownText");
+      const expiry = card.dataset.expiry;
+      const expireDate = new Date(expiry);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const diffTime = expireDate - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (isNaN(diffDays)) {
+        countdownText.textContent = "Tanggal tidak valid";
+        card.classList.add("border-gray-400");
+        return;
+      }
+
+      if (diffDays > 3) {
+        card.classList.add("border-green-500");
+        countdownText.textContent = `${diffDays} hari tersisa`;
+      } else if (diffDays > 0) {
+        card.classList.add("border-yellow-400", "blinking");
+        countdownText.textContent = `${diffDays} hari lagi`;
+      } else {
+        card.classList.add("border-red-500", "blinking");
+        countdownText.textContent = `Expired (${expiry})`;
+      }
+    });
+  </script>
+
+</body>
+</html>
